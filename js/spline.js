@@ -1,10 +1,9 @@
 
-
 // var margin = {top: 20, right: 20, bottom: 30, left: 40};
-var width = 1000,
-    height = 500;
+var width = 600,
+    height = 300;
 
-var xScale = d3.scale.linear().domain([0, 1000]).range([0, width], 10);
+var xScale = d3.scale.linear().domain([0, 600]).range([0, width]);
 var yScale = d3.scale.linear().domain([0, 1]).range([height, 0]);
 
 var xAxis = d3.svg.axis()
@@ -17,7 +16,7 @@ var yAxis = d3.svg.axis()
     .ticks(10, "%");
 
 var points = d3.range(1, 5).map(function(i) {
-  return [i * width / 5, (height-(i*100)) ];
+  return [(i * width / 8), (height-(i*50)) ];
 });
 
 var dragged = null;
@@ -42,18 +41,16 @@ var curve = graph.append("path")
     .attr("id", "animCurve")
     .call(redraw);
 
-var curveLength = curve.node().getTotalLength();
-
-graph.append("g")
-  .attr("class", " x axis")
-  .attr("transform", "translate(0," + height + ")")
-  .call(xAxis)
-  .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("yScale", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
-    .text("Frequency");
+var verticalLine = graph.append('line')
+// .attr('transform', 'translate(100, 50)')
+.attr({
+    'x1': 0,
+    'y1': 0,
+    'x2': 0,
+    'y2': height
+})
+    .attr("stroke", "steelblue")
+    .attr('class', 'verticalLine');
 
 d3.select(window)
     .on("mousemove", mousemove)
@@ -120,31 +117,6 @@ function mousemove() {
   dragged[0] = Math.max(0, Math.min(width, m[0]));
   dragged[1] = Math.max(0, Math.min(height, m[1]));
   redraw();
-
-  var xPos = d3.event.pageX;
-  var x = xPos;
-  var beginning = x;
-  var end = curveLength;
-  var target;
-
-  while(true) {
-    target = Math.floor((beginning + end) / 2);
-    pos = curve.node().getPointAtLength(target);
-    if (( target === end || target === beginning) && pos.x !== x) {
-      break;
-    }
-    if (pos.x > x){
-      end = target;
-    } else if (pos.x < x) {
-      beginning = target;
-    } else {
-      break;
-    }
-
-    // console.log("x and y of pointer: " + [pos.x, pos.y]);
-    // console.log("mouse is at curve position x: "+ [xScale.invert(pos.x), yScale.invert(pos.y)]);
-    
-  }
 }
 
 var regEx = /[A-Z]/gi;
@@ -154,23 +126,47 @@ function mouseup() {
   mousemove();
   dragged = null;
 
-  curveLength = curve.node().getTotalLength();
-  console.log("curveLength is: " + curveLength);
-
   var curveData = document.getElementById('animCurve');
   var curvePoints = curveData.getAttribute("d");
-  console.log(curvePoints);
+  // console.log(curvePoints);
   curvePoints = curvePoints.replace(regEx, ',');
-  console.log(curvePoints);
+  // console.log(curvePoints);
   curvePoints = curvePoints.split(',');
-  console.log(curvePoints);
+  // console.log(curvePoints);
   if (Array.isArray(curvePoints)) {
     for (var i = 0; i < curvePoints.length; i++ ) {
       curvePoints[i] = parseInt(curvePoints[i]);
     }
     console.log(curvePoints);
-    var distance  = curvePoints[curvePoints.length-2] - curvePoints[1];
-    console.log("The distance between the first and last point is: " + distance);
+
+    var xDistance  = curvePoints[curvePoints.length-2] - curvePoints[1];
+    console.log("curve X distance: " + xDistance);
+
+    var curveLength = curve.node().getTotalLength();
+    console.log("curveLength is: " + curveLength);
+
+    for (var sIndex = 0; sIndex < 4; sIndex++ ) {
+      var initX = curvePoints[1]+((xDistance/3)*sIndex);
+      var start = initX;
+      var end = curveLength;
+      var target;
+      while (true) {
+          // console.log("begin: "+start);
+          // console.log("end: "+end);
+          // console.log("target: "+target);
+          target = Math.floor((start + end) / 2);
+          pos = curve.node().getPointAtLength(target);
+          if ((target === end || target === start) && pos.x !== initX) {
+              break;
+          }
+          if (pos.x > initX) end = target;
+          else if (pos.x < initX) start = target;
+          else break; //position found
+      }
+      // console.log("x / y intersect graph: " + [pos.x, pos.y]);
+      console.log("data intersect graph: " + [xScale.invert(pos.x), yScale.invert(pos.y)]);
+    }
+
   }
 }
 

@@ -38,33 +38,47 @@
   ================================================== -->
 
   <div class="container">
-    <div class="sixteen columns">
-      <h1 class="remove-bottom" style="margin-top: 40px">CSS Curve Editor</h1>
-      <h5>Version 0.0</h5>
-      <hr />
-    </div>
-    <div class="two-third column">
-      <h4>Move points around to adjust your timing:</h4>
+    <div class="row">
+      
+      <div class="sixteen columns">
+        <h1 class="section remove-bottom" style="margin-top: 40px">CSS Curve Editor</h1>
+        <h5>Version 0.0</h5>
+        <hr />
+      </div>
 
-      <div id="curveEditor">
+      <div class="row">
+        <div class="two-thirds column">
+          <h4>Move points around to adjust your timing:</h4>
+          <div id="curveEditor">
+          </div>
+        </div>
+
+        <div class="one-thirs column">
+          <p> Watch the bouncing ball:<p>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="one-third column alpha">
+          <h4>Why CSS Curve Editor?</h4>
+          <p>The way CSS set keyframes is lame. Do what the pros do and use a curve!</p>
+        </div>
+
+        <div class="one-third column alpha">
+          <label for="interpolate">Interpolate:</label>
+          <select id="interpolate"></select><br>
+        </div>
+
+        <div class="one-third column alpha">
+          <p>CSS key data:</p>
+            <div id="cssData">
+            </div>
+        </div>
 
       </div>
 
     </div>
-    <div class="one-third column">
-      <h4>Why CSS Curve Editor?</h4>
-      <p>Setting keframes in CSS is lame. Do what the pros do and use a curve!</p>
-
-<!--       <div>
-        <form>
-          <label for="interpolate">Interpolate:</label>
-          <select id="interpolate"></select><br>
-        </form>
-      </div> -->
-
-    </div>
-
-
   </div>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -112,17 +126,6 @@ var curve = graph.append("path")
     .attr("class", "line")
     .attr("id", "animCurve")
     .call(redraw);
-
-var verticalLine = graph.append('line')
-// .attr('transform', 'translate(100, 50)')
-.attr({
-    'x1': 0,
-    'y1': 0,
-    'x2': 0,
-    'y2': height
-})
-    .attr("stroke", "steelblue")
-    .attr('class', 'verticalLine');
 
 d3.select(window)
     .on("mousemove", mousemove)
@@ -193,6 +196,12 @@ function mousemove() {
 
 var regEx = /[A-Z]/gi;
 
+var roundIt = function(number) {
+  number = number * 100;
+  number = Math.round(number);
+  return number / 100 ;
+};
+
 function mouseup() {
   if (!dragged) return;
   mousemove();
@@ -217,8 +226,10 @@ function mouseup() {
     var curveLength = curve.node().getTotalLength();
     console.log("curveLength is: " + curveLength);
 
-    for (var sIndex = 0; sIndex < 4; sIndex++ ) {
-      var initX = curvePoints[1]+((xDistance/3)*sIndex);
+    d3.select('#cssData').selectAll("p").remove();
+
+    for (var sIndex = 0; sIndex < 9; sIndex++ ) {
+      var initX = curvePoints[1]+((xDistance/8)*sIndex);
       var start = initX;
       var end = curveLength;
       var target;
@@ -235,8 +246,12 @@ function mouseup() {
           else if (pos.x < initX) start = target;
           else break; //position found
       }
-      // console.log("x / y intersect graph: " + [pos.x, pos.y]);
+
+      var roundX = roundIt(xScale.invert(pos.x));
+      var roundY = roundIt(yScale.invert(pos.y));
+      console.log("x / y intersect graph: " + [pos.x, pos.y]);
       console.log("data intersect graph: " + [xScale.invert(pos.x), yScale.invert(pos.y)]);
+      d3.select('#cssData').append("p").text(roundX+", "+ roundY);
     }
 
   }
