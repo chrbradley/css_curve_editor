@@ -1,68 +1,4 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Spline Editor</title>
-<style>
 
-body {
-  font: 13px sans-serif;
-  position: relative;
-  width: 960px;
-  height: 500px;
-}
-
-form {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-}
-
-rect {
-  fill: none;
-  pointer-events: all;
-}
-
-circle,
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-circle {
-  fill: #fff;
-  fill-opacity: .2;
-  cursor: move;
-}
-
-.selected {
-  fill: #ff7f0e;
-  stroke: #ff7f0e;
-}
-
-.axis {
-  font: 10px sans-serif;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.x.axis path {
-  display: none;
-}
-
-</style>
-<body>
-<div id='curveEditor'></div>
-<form>
-  <label for="interpolate">Interpolate:</label>
-  <select id="interpolate"></select><br>
-</form>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script>
 
 // var margin = {top: 20, right: 20, bottom: 30, left: 40};
 var width = 1000,
@@ -219,15 +155,15 @@ function mouseup() {
   dragged = null;
 
   curveLength = curve.node().getTotalLength();
-  // console.log("curveLength is: " + curveLength);
+  console.log("curveLength is: " + curveLength);
 
   var curveData = document.getElementById('animCurve');
   var curvePoints = curveData.getAttribute("d");
-  // console.log(curvePoints);
+  console.log(curvePoints);
   curvePoints = curvePoints.replace(regEx, ',');
-  // console.log(curvePoints);
+  console.log(curvePoints);
   curvePoints = curvePoints.split(',');
-  // console.log(curvePoints);
+  console.log(curvePoints);
   if (Array.isArray(curvePoints)) {
     for (var i = 0; i < curvePoints.length; i++ ) {
       curvePoints[i] = parseInt(curvePoints[i]);
@@ -251,7 +187,3 @@ function keydown() {
     }
   }
 }
-
-</script>
-
-</body>
