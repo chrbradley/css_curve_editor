@@ -18,9 +18,9 @@
 
   <!-- CSS
   ================================================== -->
-  <link rel="stylesheet" href="stylesheets/base.css">
-  <link rel="stylesheet" href="stylesheets/skeleton.css">
-  <link rel="stylesheet" href="stylesheets/layout.css">
+  <link rel="stylesheet" href="./stylesheets/base.css">
+  <link rel="stylesheet" href="./stylesheets/skeleton.css">
+  <link rel="stylesheet" href="./stylesheets/layout.css">
 
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,6 +29,12 @@
   <!-- Favicons
   ================================================== -->
   <link rel="shortcut icon" href="images/favicon.ico">
+
+<style type="text/css" id='keyFrames'>
+/* Animations */
+
+
+</style>
 </head>
 <body>
 
@@ -55,6 +61,10 @@
 
         <div class="one-thirs column">
           <p> Watch the bouncing ball:<p>
+          <div id="ballWrapper">
+            <div id="ball"></div>
+            <div id="ballShadow"></div>
+          </div>
         </div>
       </div>
 
@@ -62,7 +72,7 @@
 
         <div class="one-third column alpha">
           <h4>Why CSS Curve Editor?</h4>
-          <p>The way CSS set keyframes is lame. Do what the pros do and use a curve!</p>
+          <p>Setting keyframes in CSS is lame. Do what the pros do and use a curve!</p>
         </div>
 
         <div class="one-third column alpha">
@@ -82,6 +92,7 @@
   </div>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <!-- <script type="text/javacript" src="./js/spline.js"></script> -->
 <script>
 
@@ -89,7 +100,7 @@
 var width = 600,
     height = 300;
 
-var xScale = d3.scale.linear().domain([0, 600]).range([0, width]);
+var xScale = d3.scale.linear().domain([0, 1]).range([0, width]);
 var yScale = d3.scale.linear().domain([0, 1]).range([height, 0]);
 
 var xAxis = d3.svg.axis()
@@ -102,7 +113,7 @@ var yAxis = d3.svg.axis()
     .ticks(10, "%");
 
 var points = d3.range(1, 5).map(function(i) {
-  return [(i * width / 8), (height-(i*50)) ];
+  return [(i * width / 5), (height-(i*50)) ];
 });
 
 var dragged = null;
@@ -253,7 +264,7 @@ function mouseup() {
       console.log("data intersect graph: " + [xScale.invert(pos.x), yScale.invert(pos.y)]);
       d3.select('#cssData').append("p").text(roundX+", "+ roundY);
     }
-
+   
   }
 }
 
@@ -270,6 +281,12 @@ function keydown() {
     }
   }
 }
+
+function updateAnim() {
+  document.getElementById('ball').style.webkitAnimationName = "none";
+}
+
+
 </script>
 <!-- End Document
 ================================================== -->
