@@ -21,10 +21,11 @@
       .left { background: #666; }
       #p1X, #p1Y { color: #00AEDB; }
       #p2X, #p2Y { color: #666; }
-      .first { left: 0; top: 400px; }
-      .right { left: 50px; top: -200px; }
-      .left { left: -50px; top: 200px; }
-      .second { left: 400px; top: 0; }
+      .first { left: 50px; top: 350px; }
+      .second { left: 350px; top: 50px; }
+      .mid { left: 200px; top: 200px;}
+      .right { left: 40px; top: 0px; }
+      .left { left: -40px; top: 0px; }
       canvas { border: 1px solid #333; border-top: 1px dashed #333; border-right: 1px dashed #333; }
       .canned-function { color: #666; }
       .css { margin: 0; padding-top: 30px;  font-size: 16px; }
@@ -106,10 +107,16 @@
 
             <div class="coordinate-plane">
               <div class="knob endpoint first">
+                <span class="knob left"></span>
+                <span class="knob right"></span>
+              </div>
+              <div class="knob endpoint mid">
+                <span class="knob left"></span>
                 <span class="knob right"></span>
               </div>
               <div class="knob endpoint second">
                 <span class="knob left"></span>
+                <span class="knob right"></span>
               </div><!-- 
               <a href="#" class="knob p0"></a>
               <a href="#" class="knob p1"></a>

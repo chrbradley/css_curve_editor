@@ -1,4 +1,4 @@
-var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier;
+var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier, $endpoints, $start, $end;
 
 
 
@@ -19,11 +19,16 @@ $(function() {
     var ctx = $("#bezierCurve").get(0).getContext("2d");
     
     box = $(".box").get(0);
-    var endpoints = $(".knob.endpoint");
-    $p0 = $(endpoints[0]);
-    $p1 = $p0.children('.right');
-    $p3 = $(endpoints[1]);
-    $p2 = $p3.children('.left');
+    $endpoints = $(".knob.endpoint");
+    $start = $($endpoints[0]);
+
+    // somehow get midpoints
+
+    $end = $($endpoints[$endpoints.length - 1]);
+    // $p0 = $(endpoints[0]);
+    // $p1 = $p0.children('.right');
+    // $p3 = $(endpoints[1]);
+    // $p2 = $p3.children('.left');
     $customBezier = $("#customBezier");
     $cubicBezier = $("#cubicBezier");
     
@@ -86,50 +91,63 @@ function adjustValue(val) {
 }
 
 function renderWrap(ctx) {
-    var p0 = $p0.position(), // endpoint 1
-        p1 = $p1.position(),  // midpoint
-        p2 = $p2.position(),  // midpoint
-        p3 = $p3.position(); // endpoint 2
-    render(ctx, {                                   // function render(ctx, start, [midpoints], end)
-        x: p0.left,
-        y: p0.top
-    },{
-        x: p0.left + p1.left,
-        y: p0.top + p1.top
-    }, {
-        x: p2.left + p3.left,
-        y: p2.top + p3.top
-    }, {
-        x: p3.left,
-        y: p3.top
-    });
+    // var p0 = $p0.position(), // endpoint 1
+    //     p1 = $p1.position(),  // midpoint
+    //     p2 = $p2.position(),  // midpoint
+    //     p3 = $p3.position(); // endpoint 2
+    render(ctx, $start,[], $end);
 };
 
-function render(ctx, p0, p1, p2, p3) {
+function render(ctx, start, midpoints, end) {
     var ctx = ctx;
     ctx.clearRect(0,0,400,400);
     
     ctx.beginPath();
     ctx.lineWidth = 5;
     ctx.strokeStyle = "#333";
-    ctx.moveTo(p0.x + 5,p0.y + 5);
-    // p1 (x,y) p2 (x,y)
-    ctx.bezierCurveTo(p1.x,p1.y,p2.x,p2.y,p3.x+5,p3.y+5);
-    ctx.stroke();
+
+    $endpoints.each(function(index, point){
+      if ($endpoints[index + 1]){
+
+        $point = $(point);
+        $next = $($endpoints[index + 1]);
+
+        ctx.moveTo($point.position().left + 5,$point.position().top + 5);
+
+        ctx.bezierCurveTo($point.children('.right').position().left + $point.position().left,
+                          $point.children('.right').position().top + $point.position().top,
+                          $next.children('.left').position().left + $next.position().left,
+                          $next.children('.left').position().top + $next.position().top,
+                          $next.position().left + 5,
+                          $next.position().top + 5);
+        ctx.stroke();
+
+      }
+    });
+
+
+
+
     ctx.closePath();
     
     ctx.beginPath();
     ctx.strokeStyle = "#999";
     ctx.lineWidth = 1;
-    ctx.moveTo(p0.x + 5, p0.y + 5);
-    // p1 (x,y)
-    ctx.lineTo(p1.x + 5, p1.y + 5);
-    ctx.stroke();
-    
-    ctx.moveTo(p3.x + 5, p3.y + 5);
-    // p2 (x,y)
-    ctx.lineTo(p2.x + 5, p2.y + 5 );
-    ctx.stroke();
+
+    $endpoints.each(function(index, point){
+      $point = $(point);
+      $point.children().each(function(index, child){
+        $child = $(child);
+
+        ctx.moveTo($point.position().left + 5,$point.position().top + 5);
+
+        ctx.lineTo($child.position().left +5 + $point.position().left,
+                   $child.position().top +5 + $point.position().top);
+
+        ctx.stroke();
+      });
+    });
+
     ctx.closePath();
         
     // if($.browser.mozilla) {
@@ -138,10 +156,10 @@ function render(ctx, p0, p1, p2, p3) {
     //     $(".p2X").html( adjustValue( (p2.x) / 400) );
     //     $(".p2Y").html( adjustValue( 1 - (p2.y) / 400) );
     // } else {
-        $(".p1X").html( adjustValue( (p1.x + 5) / 400) );
-        $(".p1Y").html( adjustValue( 1 - (p1.y + 4) / 400) );
-        $(".p2X").html( adjustValue( (p2.x + 5) / 400) );
-        $(".p2Y").html( adjustValue( 1 - (p2.y + 4) / 400) );
+        // $(".p1X").html( adjustValue( (p1.x + 5) / 400) );
+        // $(".p1Y").html( adjustValue( 1 - (p1.y + 4) / 400) );
+        // $(".p2X").html( adjustValue( (p2.x + 5) / 400) );
+        // $(".p2Y").html( adjustValue( 1 - (p2.y + 4) / 400) );
     // }
     
 }
