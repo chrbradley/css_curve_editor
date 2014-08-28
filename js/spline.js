@@ -216,7 +216,48 @@ function render(ctx) {
 
 
 
-function keyframes(ctx) {
+function keyframes() {
+  var html = [ "Here are the keyframes:" ];
+  var first = $($endpoints[0]).position().left;
+  var last = $($endpoints[$endpoints.length-1]).position().left;
+  var total = last - first;
+
+  $endpoints.each(function(index, point){
+    if ($endpoints[index - 1]){
+
+      var $point = $(point);
+      var $prev = $($endpoints[index - 1]);
+
+      var positionY = Math.abs( 400 - $point.position().top );
+      var currentPositionX = $point.position().left - first;
+      var percentage = Math.round( (currentPositionX / total) * 100 );
+
+      var cubic = [];
+      var prevRightX = $prev.children('.right').position().left + $prev.position().left;
+      prevRightX = parseFloat( (prevRightX+5) / 800 ).toFixed(2);
+      var prevRightY = $prev.children('.right').position().top + $prev.position().top;
+      prevRightY = parseFloat( 1 - (prevRightY+5) / 400 ).toFixed(2);
+      var currentLeftX = $point.children('.left').position().left + $point.position().left;
+      currentLeftX = parseFloat( (currentLeftX+5) / 800 ).toFixed(2);
+      var currentRightY = $point.children('.left').position().top + $point.position().top;
+      currentRightY = parseFloat( 1 - (currentRightY+5) / 400 ).toFixed(2);
+      cubic.push(prevRightX, prevRightY, currentLeftX, currentRightY);
+
+      html.push(percentage + "%  {");
+      html.push("top: " + positionY + ",");
+      html.push("animation-timing-function: cubic-bezier(" + cubic.join(",") + ")");
+      html.push("}");
+    } else {
+      var $point = $(point);
+      var positionY = Math.abs( 400 - $point.position().top );
+
+      html.push("0%  {");
+      html.push("top: " + positionY + ",");
+      html.push("}");
+    }
+  });
+
+  $("#cssData").html( html.join( "<br>" ) );
   
 }
 
