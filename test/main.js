@@ -32,18 +32,18 @@ $(function() {
     $customBezier = $("#customBezier");
     $cubicBezier = $("#cubicBezier");
     
-    renderWrap(ctx);
+    render(ctx);
     setTransitionFn();
     setDemoValue();
     
     $(".knob").draggable({
         containment: '.coordinate-plane',
         drag: function(event, ui) {
-            renderWrap(ctx);
+            render(ctx);
             setDemoValue();
         },
         stop: function(){
-            renderWrap(ctx);
+            render(ctx);
             setTransitionFn();
             setDemoValue();
         }
@@ -56,7 +56,7 @@ $(function() {
         $p1.css("top",  (1 - vals[1]) * 400);
         $p2.css("left", vals[2] * 400);
         $p2.css("top",  (1 - vals[3]) * 400);
-        renderWrap(ctx);
+        render(ctx);
         setTransitionFn();
         setDemoValue();
     });
@@ -72,6 +72,65 @@ $(function() {
             // console.log($(".box").get(1).style.webkitTransition)
         }, 2000);
     });
+//----------------------add-----------------------------*
+    $('.coordinate-plane').on('click', function(event){
+      //added alt key event
+      if (event.altKey) {
+
+        var element = $('<div class="knob endpoint"><span class="knob left"></span><span class="knob right"></span></div>');
+        //counted for offset
+        var offSet = $(this).offset();
+        var relX = event.pageX - offSet.left;
+        var relY = event.pageY - offSet.top;
+        //finding the one to the right
+        var theOne;
+        //goes through and find the one to the right
+        $endpoints.each(function(index){
+          if( $($endpoints[index]).position().left > relX ){
+            theOne = $($endpoints[index]);
+            element.insertBefore(theOne).css({"left": relX, "top": relY});
+            return false;
+          } else {
+            theOne = $($endpoints[index]);
+            element.insertAfter(theOne).css({"left": relX, "top": relY});
+          }
+        });
+
+        if( $endpoints.length === 0){
+          element.appendTo($('.coordinate-plane')).css({"left": relX, "top": relY});
+        }
+
+        //these needs to be copy here
+        $endpoints = $(".knob.endpoint");
+        render(ctx);
+
+        //this needs to be copy here
+        
+        $(".knob").draggable({
+            containment: '.coordinate-plane',
+            drag: function(event, ui) {
+                render(ctx);
+                setDemoValue();
+            },
+            stop: function(){
+                render(ctx);
+                setTransitionFn();
+                setDemoValue();
+            }
+        });
+      }
+
+    });
+//------------------delete--------------------------------*
+    $('body').on('click', '.knob.endpoint', function() {
+      if (event.shiftKey) {
+        $(this).remove();
+        //this needs to be copy here
+        $endpoints = $(".knob.endpoint");
+        render(ctx);
+      }
+    });
+//---------------------------------------------------------*
 });
 
 function setDemoValue() { 
@@ -90,17 +149,8 @@ function adjustValue(val) {
     return val;
 }
 
-function renderWrap(ctx) {
-    // var p0 = $p0.position(), // endpoint 1
-    //     p1 = $p1.position(),  // midpoint
-    //     p2 = $p2.position(),  // midpoint
-    //     p3 = $p3.position(); // endpoint 2
-    render(ctx, $start,[], $end);
-};
-
-function render(ctx, start, midpoints, end) {
-    var ctx = ctx;
-    ctx.clearRect(0,0,400,400);
+function render(ctx) {
+    ctx.clearRect(0,0,800,400);
     
     ctx.beginPath();
     ctx.lineWidth = 5;
@@ -163,3 +213,55 @@ function render(ctx, start, midpoints, end) {
     // }
     
 }
+
+
+
+function keyframes(ctx) {
+  
+}
+
+// @keyframes CUSTOMIZABLE {
+//     0% { // position of endpoint on x
+//         top: //position of endpoint on y;
+//         animation-timing-function: cubic-bezier(
+//             x1, // current right nob x
+//             y1, // current right nob y
+//             x2, // next left nob x
+//             y2  // next right nob y
+//         );
+//     }
+//     50% {
+//         top: 140px;
+//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
+//     }
+//     55% {
+//         top: 160px; 
+//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
+//     }
+//     65% {
+//         top: 120px; 
+//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
+//     }
+//     95% {
+//         top: 0;
+//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
+//     }
+//     100% {
+//         top: 0;
+//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

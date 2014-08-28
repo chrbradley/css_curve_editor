@@ -12,7 +12,7 @@
 
       ol { margin: 5px 0 0 0; }
       ol li { font-size: 14px; line-height: 1.5; }
-      .coordinate-plane { position: relative; left: 30px;  /*height: 405px;*/ height: 412px; width: 412px; }
+      .coordinate-plane { position: relative; left: 30px;  /*height: 405px;*/ height: 412px; width: 812px; }
       .knob { background: #fff; position: absolute; display: block; height: 10px; width: 10px; border: 1px solid #333; -moz-border-radius: 50px; border-radius: 50px; 
         -webkit-transform: translate(-5px,-4px); 
         -moz-transform: translate(-5px,-4px); 
@@ -54,8 +54,8 @@
       }
       .moveBox .box { left: 400px; }
       .graph { height: 432px; width: 432px; position: relative; }
-      .x-axis { left: 32px; bottom: 0; position: absolute; height: 30px; width: 400px;  }
-      .x-axis .marker, .x-axis .big-marker { height: 15px; width: 39px; border-right: 1px solid #333; float: left;}
+      .x-axis { left: 32px; bottom: 0; position: absolute; height: 30px; width: 800px;  }
+      .x-axis .marker, .x-axis .big-marker { height: 15px; width: 79px; border-right: 1px solid #333; float: left;}
       .x-axis .big-marker { height: 30px; }
       .y-axis { position: absolute; width: 30px; height: 400px; }
       .y-axis .big-marker, .y-axis .marker { height: 39px; border-top: 1px solid #333; }
@@ -77,9 +77,14 @@
     
     
     <div class="grid-system clearfix">
+      <div class="row">
+        <div class="col span-12">
+          <h1>CSS Keyframe Editor</h1>
+        </div>
+      </div>
       <div class="row" id="bezier-builder">
         <div class="col span-12">
-          <div class="graph col span-5">
+          <div class="graph col span-9">
             <div class="x-axis">
               <div class="marker"></div>
               <div class="marker"></div>
@@ -123,11 +128,11 @@
               <a href="#" class="knob p2"></a>
               <a href="#" class="knob p3"></a>
  -->
-              <canvas height="400" width="400" id="bezierCurve" />
+              <canvas height="400" width="800" id="bezierCurve" />
             </div>
           </div>
 
-          <div class="demo col span-6">
+          <div class="demo clear">
             <p><a href="#" id="animateBox">Click here</a> to compare transition timing functions:</p>   
 
             <p id="customBezier">cubic-bezier(reflects current graph):</p>
