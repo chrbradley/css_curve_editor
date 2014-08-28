@@ -333,9 +333,9 @@ circle {
   border-radius: 20px;
   background: rgb(187,187,187);
   position: relative;
+  top: 0px;
   -webkit-animation-duration: 2s;
   -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
   -webkit-animation-name: "bounce";
 }
 
@@ -405,10 +405,27 @@ circle {
 /* Animations */
 
 @-webkit-keyframes bounce {
-  0% {-webkit-transform: translateY(0);
-    }
-  50% {-webkit-transform: translateY(250px);
-    }
-  100% {-webkit-transform: translateY(0);
-    }
+  0% {
+    top: 45px;
+  }
+  24% {
+    top: 195px;
+    -webkit-animation-timing-function: cubic-bezier(0.16, 0.27, 0.18, 0.45);
+  }
+  48% {
+    top: 345px;
+    -webkit-animation-timing-function: cubic-bezier(0.31, 0.45, 0.37, 0.83);
+  }
+  75% {
+    top: 218px;
+    -webkit-animation-timing-function: cubic-bezier(0.50, 0.83, 0.58, 0.51);
+  }
+  84% {
+    top: 339px;
+    -webkit-animation-timing-function: cubic-bezier(0.71, 0.51, 0.65, 0.81);
+  }
+  100 % {
+    top: 41px;
+    -webkit-animation-timing-function: cubic-bezier(0.78, 0.81, 0.77, 0.07);
+  }
 }
