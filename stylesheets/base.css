@@ -339,6 +339,69 @@ circle {
   -webkit-animation-name: "bounce";
 }
 
+
+.coordinate-plane {
+  border: 1px dotted black;
+  position: relative;
+  height: 400px;
+  width: 800px;
+}
+.knob {
+	background: #fff;
+  position: absolute;
+  display: block;
+  height: 10px;
+  width: 10px;
+  border: 1px solid #4682B4;
+  -moz-border-radius: 50px;
+  border-radius: 50px;
+  margin: -10px -10px 0 0;
+  -webkit-transform: translate(-5px, 5px);
+  -moz-transform: translate(-5px, 5px);
+}
+.knob:hover, .knob:active {
+	border-color:#E66600;
+}
+.knob.endpoint:hover, .knob.endpoint:active {
+	background: #FFE574;
+}
+.left, .right {
+  background: #1AC8F5;
+  z-index: 50;
+  position: relative;
+}
+.left {
+  background: #CCC;
+}
+#p1X, #p1Y {
+  color: #00AEDB;
+}
+#p2X, #p2Y {
+  color: #666;
+}
+.first {
+  left: 50px;
+  top: 350px;
+}
+.second {
+  left: 350px;
+  top: 50px;
+}
+.mid {
+  left: 200px;
+  top: 200px;
+}
+.right {
+  left: 56px;
+  top: 2px;
+}
+.left {
+  left: -47px;
+  top: 4px;
+}
+
+
+
 /* Animations */
 
 @-webkit-keyframes bounce {
