@@ -252,13 +252,13 @@ function keyframes() {
       var positionY = Math.abs( 400 - $point.position().top );
 
       html.push("0%  {");
-      html.push("top: " + positionY + ",");
+      html.push("top: " + positionY);
       html.push("}");
     }
   });
 
   $("#cssData").html( html.join( "<br>" ) );
-  $('#keyFrames').text(html.join());  
+  $('#keyFrames').text(html.join());
 }
 
 // @keyframes CUSTOMIZABLE {
