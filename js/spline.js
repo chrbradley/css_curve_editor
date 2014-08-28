@@ -228,7 +228,7 @@ function keyframes() {
       var $point = $(point);
       var $prev = $($endpoints[index - 1]);
 
-      var positionY = Math.abs( 400 - $point.position().top );
+      var positionY = Math.abs( $point.position().top ); //400 - 
       var currentPositionX = $point.position().left - first;
       var percentage = Math.round( (currentPositionX / total) * 100 );
 
@@ -249,7 +249,7 @@ function keyframes() {
       html.push("}");
     } else {
       var $point = $(point);
-      var positionY = Math.abs( 400 - $point.position().top );
+      var positionY = Math.abs( $point.position().top ); //400 - 
 
       html.push("0%  {");
       html.push("top: " + positionY + "px;");
