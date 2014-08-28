@@ -258,7 +258,7 @@ function keyframes() {
   });
 
   $("#cssData").html( html.join( "<br>" ) );
-  
+  $('#keyFrames').text(html.join());  
 }
 
 // @keyframes CUSTOMIZABLE {
