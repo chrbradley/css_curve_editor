@@ -217,7 +217,7 @@ function render(ctx) {
 
 
 function keyframes() {
-  var html = [ "Here are the keyframes:" ];
+  var html = [ "@-webkit-keyframes bounce {" ];
   var first = $($endpoints[0]).position().left;
   var last = $($endpoints[$endpoints.length-1]).position().left;
   var total = last - first;
@@ -244,8 +244,8 @@ function keyframes() {
       cubic.push(prevRightX, prevRightY, currentLeftX, currentRightY);
 
       html.push(percentage + "%  {");
-      html.push("top: " + positionY + ",");
-      html.push("animation-timing-function: cubic-bezier(" + cubic.join(",") + ")");
+      html.push("top: " + positionY + ";");
+      html.push("animation-timing-function: cubic-bezier(" + cubic.join(";") + ")");
       html.push("}");
     } else {
       var $point = $(point);
@@ -256,9 +256,10 @@ function keyframes() {
       html.push("}");
     }
   });
+  html.push("}");
 
   $("#cssData").html( html.join( "<br>" ) );
-  $('#keyFrames').text(html.join());
+  $('#keyFrames').text(html.join(" "));
 }
 
 // @keyframes CUSTOMIZABLE {
