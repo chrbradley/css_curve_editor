@@ -1,4 +1,4 @@
-var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier, $endpoints, $start, $end;
+var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier, $endpoints, $start, $end, toggled;
 
 
 
@@ -15,7 +15,7 @@ var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier, $endpoints, $start, $e
 
 
 $(function() {
-
+    toggled = true;
     var ctx = $("#bezierCurve").get(0).getContext("2d");
     
     box = $(".box").get(0);
@@ -35,15 +35,21 @@ $(function() {
     render(ctx);
     // setTransitionFn();
     // setDemoValue();
-    
+    var winwidth = window.innerWidth;
+    var conwidth = $('.container').innerWidth();
+    var contain = (winwidth - conwidth) / 2 + 10;
     $(".knob").draggable({
-        containment: '.coordinate-plane',
+        // containment: '.coordinate-plane',
+        containment: [contain, 190, contain + 800, 590],
         drag: function(event, ui) {
             render(ctx);
             // setDemoValue();
         },
         stop: function(){
             render(ctx);
+
+            // setTransitionFn();
+            // setDemoValue();
             // setTransitionFn();
             // setDemoValue();
         }
@@ -77,8 +83,11 @@ $(function() {
       //added alt key event
       if (event.altKey) {
 
-        var element = $('<div class="knob endpoint"><span class="knob left"></span><span class="knob right"></span></div>');
+        var element = $('<div class="knob endpoint"><span class="knob handle left"></span><span class="knob handle right"></span></div>');
         //counted for offset
+        if(!toggled) {
+          element.addClass('hide-handle');
+        }
         var offSet = $(this).offset();
         var relX = event.pageX - offSet.left;
         var relY = event.pageY - offSet.top;
@@ -130,7 +139,12 @@ $(function() {
         render(ctx);
       }
     });
-//---------------------------------------------------------*
+//----------------button click-----------------------------------*
+  $('#button').on('click', function(){
+    toggled = !toggled;
+    $endpoints.toggleClass('hide-handle');
+    render(ctx);
+  });
 });
 
 // function setDemoValue() { 
@@ -179,26 +193,27 @@ function render(ctx) {
 
 
     ctx.closePath();
-    
-    ctx.beginPath();
-    ctx.strokeStyle = "#999";
-    ctx.lineWidth = 1;
+    if(toggled) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#999";
+      ctx.lineWidth = 1;
 
-    $endpoints.each(function(index, point){
-      $point = $(point);
-      $point.children().each(function(index, child){
-        $child = $(child);
+      $endpoints.each(function(index, point){
+        $point = $(point);
+        $point.children().each(function(index, child){
+          $child = $(child);
 
-        ctx.moveTo($point.position().left + 5,$point.position().top - 4);
+          ctx.moveTo($point.position().left + 5,$point.position().top - 4);
 
-        ctx.lineTo($child.position().left  + $point.position().left + 5,
-                   $child.position().top  + $point.position().top - 13);
+          ctx.lineTo($child.position().left  + $point.position().left + 5,
+                     $child.position().top  + $point.position().top - 13);
 
-        ctx.stroke();
+          ctx.stroke();
+        });
       });
-    });
 
-    ctx.closePath();
+      ctx.closePath();
+    }
         
     // if($.browser.mozilla) {
     //     $(".p1X").html( adjustValue( (p1.x) / 400) );
@@ -211,7 +226,14 @@ function render(ctx) {
         // $(".p2X").html( adjustValue( (p2.x + 5) / 400) );
         // $(".p2Y").html( adjustValue( 1 - (p2.y + 4) / 400) );
     // }
-    
+    keyframes();
+    console.log('should have redrawn');
+    $('#ball').remove();
+    $('<div id="ball"></div>').css({
+      '-webkit-animation-duration': '3s',
+      '-webkit-animation-iteration-count': 'infinite',
+      '-webkit-animation-name': 'bounce'
+    }).prependTo('#ballWrapper');
 }
 
 
@@ -228,7 +250,7 @@ function keyframes() {
       var $point = $(point);
       var $prev = $($endpoints[index - 1]);
 
-      var positionY = Math.abs( $point.position().top ); //400 - 
+      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100); //400 - 
       var currentPositionX = $point.position().left - first;
       var percentage = Math.round( (currentPositionX / total) * 100 );
 
@@ -244,15 +266,15 @@ function keyframes() {
       cubic.push(prevRightX, prevRightY, currentLeftX, currentRightY);
 
       html.push(percentage + "%  {");
-      html.push("top: " + positionY + "px;");
+      html.push("bottom: " + positionY + "%;");
       html.push("-webkit-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
       html.push("}");
     } else {
       var $point = $(point);
-      var positionY = Math.abs( $point.position().top ); //400 - 
+      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100); //400 - 
 
       html.push("0%  {");
-      html.push("top: " + positionY + "px;");
+      html.push("bottom: " + positionY + "%;");
       html.push("}");
     }
   });

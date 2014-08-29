@@ -416,7 +416,7 @@ circle {
 }
 #ballWrapper {
   width: 140px;
-  height: 300px;
+  height: 400px;
   position: relative;
   z-index: 100;
 }
@@ -425,9 +425,8 @@ circle {
   height: 40px;
   border-radius: 20px;
   background: rgb(187, 187, 187);
-  position: relative;
-  /*top: 0px;*/
-
+  position: absolute;
+  bottom: 0;
 }
 .coordinate-plane {
   border: 1px dotted black;
@@ -453,6 +452,11 @@ circle {
 }
 .knob.endpoint:hover, .knob.endpoint:active {
   background: #FFE574;
+}
+.hide-handle .handle {
+  background: transparent;
+  border: none;
+  pointer-events: none;
 }
 .left, .right {
   background: #1AC8F5;
