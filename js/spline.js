@@ -17,7 +17,6 @@ $(function() {
             render(ctx);
         }
     });
-
 //----------------------add-----------------------------*
     $('.coordinate-plane').on('click', function(event){
       //added alt key event
@@ -48,7 +47,6 @@ $(function() {
         if( $endpoints.length === 0){
           element.appendTo($('.coordinate-plane')).css({"left": relX, "top": relY});
         }
-
         //these needs to be copy here
         $endpoints = $(".knob.endpoint");
         render(ctx);
@@ -87,7 +85,6 @@ $(function() {
   });
 });
 
-
 function adjustValue(val) {
     val = val.toFixed(2);
     val = val.toString().replace("0.", ".").replace("1.00", "1").replace(".00", "0");
@@ -119,10 +116,7 @@ function render(ctx) {
 
       }
     });
-
-
-
-
+    // ---------------------- END OF ZACH'S COMMENTS, BEGINNING OF HUY'S COMMENTS -----------------------//
     ctx.closePath();
     if(toggled) {
       ctx.beginPath();
@@ -154,8 +148,6 @@ function render(ctx) {
       '-webkit-animation-name': 'bounce'
     }).prependTo('#ballWrapper');
 }
-
-
 
 function keyframes() {
   var html = [ "@-webkit-keyframes bounce {" ];
