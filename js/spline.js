@@ -1,84 +1,33 @@
-var $p0, $p1, $p2, $p3, box, $customBezier, $cubicBezier, $endpoints, $start, $end;
-
-
-
-// point = {
-//   leftHandle = 'node';
-//   rightHandle = node;
-// };
-
-
-
-
-
-
-
+var $endpoints, toggled;
 
 $(function() {
-
+    toggled = true;
     var ctx = $("#bezierCurve").get(0).getContext("2d");
-    
-    box = $(".box").get(0);
     $endpoints = $(".knob.endpoint");
-    $start = $($endpoints[0]);
-
-    // somehow get midpoints
-
-    $end = $($endpoints[$endpoints.length - 1]);
-    // $p0 = $(endpoints[0]);
-    // $p1 = $p0.children('.right');
-    // $p3 = $(endpoints[1]);
-    // $p2 = $p3.children('.left');
-    $customBezier = $("#customBezier");
-    $cubicBezier = $("#cubicBezier");
-    
     render(ctx);
-    // setTransitionFn();
-    // setDemoValue();
-    
+    var winwidth = window.innerWidth;
+    var conwidth = $('.container').innerWidth();
+    var contain = (winwidth - conwidth) / 2 + 10;
     $(".knob").draggable({
-        containment: '.coordinate-plane',
+        containment: [contain, 190, contain + 800, 590],
         drag: function(event, ui) {
             render(ctx);
-            // setDemoValue();
         },
         stop: function(){
             render(ctx);
-            // setTransitionFn();
-            // setDemoValue();
         }
     });
-    
-    $(".canned-function").click(function(e) {
-        e.preventDefault();
-        var vals = $(this).attr("-data-easing").split(",");
-        $p1.css("left", vals[0] * 400);
-        $p1.css("top",  (1 - vals[1]) * 400);
-        $p2.css("left", vals[2] * 400);
-        $p2.css("top",  (1 - vals[3]) * 400);
-        render(ctx);
-        // setTransitionFn();
-        // setDemoValue();
-    });
-    
-    $("#animateBox").click(function(e){
-        e.preventDefault();
-        var $body = $("body");
-        
-        $body.addClass("moveBox");
-        
-        setTimeout(function() {
-            $body.removeClass("moveBox");
-            // console.log($(".box").get(1).style.webkitTransition)
-        }, 2000);
-    });
+
 //----------------------add-----------------------------*
     $('.coordinate-plane').on('click', function(event){
       //added alt key event
       if (event.altKey) {
 
-        var element = $('<div class="knob endpoint"><span class="knob left"></span><span class="knob right"></span></div>');
+        var element = $('<div class="knob endpoint"><span class="knob handle left"></span><span class="knob handle right"></span></div>');
         //counted for offset
+        if(!toggled) {
+          element.addClass('hide-handle');
+        }
         var offSet = $(this).offset();
         var relX = event.pageX - offSet.left;
         var relY = event.pageY - offSet.top;
@@ -130,19 +79,15 @@ $(function() {
         render(ctx);
       }
     });
-//---------------------------------------------------------*
+//----------------button click-----------------------------------*
+  $('#button').on('click', function(){
+    toggled = !toggled;
+    $endpoints.toggleClass('hide-handle');
+    render(ctx);
+  });
 });
 
-// function setDemoValue() { 
-//     $customBezier.html($cubicBezier.text());
-// }
 
-// function setTransitionFn() {
-//     box.style.webkitTransition = "left 1s cubic-bezier(" + $("#p1X").html() + "," + $("#p1Y").html() + ","+$("#p2X").html() + "," + $("#p2Y").html() + ")";
-//     box.style.MozTransition = "left 1s cubic-bezier(" + $("#p1X").html() + "," + $("#p1Y").html() + ","+$("#p2X").html() + "," + $("#p2Y").html() + ")";
-// }
-
-// this just removes leading 0 and truncates values
 function adjustValue(val) {
     val = val.toFixed(2);
     val = val.toString().replace("0.", ".").replace("1.00", "1").replace(".00", "0");
@@ -179,39 +124,35 @@ function render(ctx) {
 
 
     ctx.closePath();
-    
-    ctx.beginPath();
-    ctx.strokeStyle = "#999";
-    ctx.lineWidth = 1;
+    if(toggled) {
+      ctx.beginPath();
+      ctx.strokeStyle = "#999";
+      ctx.lineWidth = 1;
 
-    $endpoints.each(function(index, point){
-      $point = $(point);
-      $point.children().each(function(index, child){
-        $child = $(child);
+      $endpoints.each(function(index, point){
+        $point = $(point);
+        $point.children().each(function(index, child){
+          $child = $(child);
 
-        ctx.moveTo($point.position().left + 5,$point.position().top - 4);
+          ctx.moveTo($point.position().left + 5,$point.position().top - 4);
 
-        ctx.lineTo($child.position().left  + $point.position().left + 5,
-                   $child.position().top  + $point.position().top - 13);
+          ctx.lineTo($child.position().left  + $point.position().left + 5,
+                     $child.position().top  + $point.position().top - 13);
 
-        ctx.stroke();
+          ctx.stroke();
+        });
       });
-    });
 
-    ctx.closePath();
-        
-    // if($.browser.mozilla) {
-    //     $(".p1X").html( adjustValue( (p1.x) / 400) );
-    //     $(".p1Y").html( adjustValue( 1 - (p1.y) / 400) );
-    //     $(".p2X").html( adjustValue( (p2.x) / 400) );
-    //     $(".p2Y").html( adjustValue( 1 - (p2.y) / 400) );
-    // } else {
-        // $(".p1X").html( adjustValue( (p1.x + 5) / 400) );
-        // $(".p1Y").html( adjustValue( 1 - (p1.y + 4) / 400) );
-        // $(".p2X").html( adjustValue( (p2.x + 5) / 400) );
-        // $(".p2Y").html( adjustValue( 1 - (p2.y + 4) / 400) );
-    // }
-    
+      ctx.closePath();
+    }
+
+    keyframes();
+    $('#ball').remove();
+    $('<div id="ball"></div>').css({
+      '-webkit-animation-duration': '3s',
+      '-webkit-animation-iteration-count': 'infinite',
+      '-webkit-animation-name': 'bounce'
+    }).prependTo('#ballWrapper');
 }
 
 
@@ -227,32 +168,44 @@ function keyframes() {
 
       var $point = $(point);
       var $prev = $($endpoints[index - 1]);
+      //distance from this node to the next
+      var diffonX = $point.position().left - $prev.position().left;
+      var diffonY = $point.position().top - $prev.position().top;
+      var coef = 1;
+      if(diffonY < 0){
+        coef = -1;
+        diffonY = Math.abs( diffonY );
+      }
 
-      var positionY = Math.abs( $point.position().top ); //400 - 
+      //older equation
+      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100); //400 - 
       var currentPositionX = $point.position().left - first;
       var percentage = Math.round( (currentPositionX / total) * 100 );
 
       var cubic = [];
-      var prevRightX = $prev.children('.right').position().left + $prev.position().left;
-      prevRightX = parseFloat( (prevRightX+5) / 800 ).toFixed(2);
-      var prevRightY = $prev.children('.right').position().top + $prev.position().top;
-      prevRightY = parseFloat( 1 - (prevRightY+5) / 400 ).toFixed(2);
-      var currentLeftX = $point.children('.left').position().left + $point.position().left;
-      currentLeftX = parseFloat( (currentLeftX+5) / 800 ).toFixed(2);
-      var currentRightY = $point.children('.left').position().top + $point.position().top;
-      currentRightY = parseFloat( 1 - (currentRightY+5) / 400 ).toFixed(2);
+      var prevRightX = $prev.children('.right').position().left;
+          prevRightX = parseFloat( (prevRightX + 4) / diffonX ).toFixed(2);
+
+      var prevRightY = $prev.children('.right').position().top * coef;
+          prevRightY = parseFloat( (prevRightY + 9) / diffonY ).toFixed(2);
+
+      var currentLeftX = diffonX + $point.children('.left').position().left;
+          currentLeftX = parseFloat( (currentLeftX + 1) / diffonX ).toFixed(2);
+
+      var currentRightY = diffonY + $point.children('.left').position().top * coef;
+          currentRightY = parseFloat( (currentRightY + 9) / diffonY ).toFixed(2);
       cubic.push(prevRightX, prevRightY, currentLeftX, currentRightY);
 
       html.push(percentage + "%  {");
-      html.push("top: " + positionY + "px;");
+      html.push("bottom: " + positionY + "%;");
       html.push("-webkit-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
       html.push("}");
     } else {
       var $point = $(point);
-      var positionY = Math.abs( $point.position().top ); //400 - 
+      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100); //400 - 
 
       html.push("0%  {");
-      html.push("top: " + positionY + "px;");
+      html.push("bottom: " + positionY + "%;");
       html.push("}");
     }
   });
@@ -261,35 +214,3 @@ function keyframes() {
   $("#cssData").html( html.join( "<br>" ) );
   $('#keyFrames').text(html.join(" "));
 }
-
-// @keyframes CUSTOMIZABLE {
-//     0% { // position of endpoint on x
-//         top: //position of endpoint on y;
-//         animation-timing-function: cubic-bezier(
-//             x1, // current right nob x
-//             y1, // current right nob y
-//             x2, // next left nob x
-//             y2  // next right nob y
-//         );
-//     }
-//     50% {
-//         top: 140px;
-//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
-//     }
-//     55% {
-//         top: 160px; 
-//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
-//     }
-//     65% {
-//         top: 120px; 
-//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
-//     }
-//     95% {
-//         top: 0;
-//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
-//     }
-//     100% {
-//         top: 0;
-//         animation-timing-function: cubic-bezier(x1,y1, x2,y2);
-//     }
-// }

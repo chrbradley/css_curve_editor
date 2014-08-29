@@ -372,51 +372,9 @@ label span, legend span {
 /* Ported 
 ===================================================*/
 
-/*body {
-  font: 13px sans-serif;
-  position: relative;
-  width: 960px;
-  height: 500px;
-}
-*/
-
-form {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-}
-rect {
-  fill: none;
-  pointer-events: all;
-}
-circle, .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-circle {
-  fill: #fff;
-  fill-opacity: .2;
-  cursor: move;
-}
-.selected {
-  fill: #ff7f0e;
-  stroke: #ff7f0e;
-}
-.axis {
-  font: 10px sans-serif;
-}
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-.x.axis path {
-  display: none;
-}
 #ballWrapper {
   width: 140px;
-  height: 300px;
+  height: 400px;
   position: relative;
   z-index: 100;
 }
@@ -425,9 +383,8 @@ circle {
   height: 40px;
   border-radius: 20px;
   background: rgb(187, 187, 187);
-  position: relative;
-  /*top: 0px;*/
-
+  position: absolute;
+  bottom: 0;
 }
 .coordinate-plane {
   border: 1px dotted black;
@@ -454,19 +411,24 @@ circle {
 .knob.endpoint:hover, .knob.endpoint:active {
   background: #FFE574;
 }
-.left, .right {
-  background: #1AC8F5;
+.hide-handle .handle {
+  background: transparent;
+  border: none;
+  pointer-events: none;
+}
+.handle {
   z-index: 50;
   position: relative;
 }
+.right {
+  background: #1AC8F5;
+  left: 56px;
+  top: 2px;
+}
 .left {
   background: #CCC;
-}
-#p1X, #p1Y {
-  color: #00AEDB;
-}
-#p2X, #p2Y {
-  color: #666;
+  left: -47px;
+  top: 4px;
 }
 .first {
   left: 50px;
@@ -479,13 +441,5 @@ circle {
 .mid {
   left: 200px;
   top: 200px;
-}
-.right {
-  left: 56px;
-  top: 2px;
-}
-.left {
-  left: -47px;
-  top: 4px;
 }
 /* Animations */
