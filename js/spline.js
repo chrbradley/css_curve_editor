@@ -129,7 +129,7 @@ function render(ctx) {
       // draw the curve from point to next point
       ctx.stroke();
     }
-  });    // ---------------------- END OF ZACH'S COMMENTS, BEGINNING OF HUY'S COMMENTS -----------------------//
+  });
   //create a path from the current point back to the starting point
   ctx.closePath();
   //if handle bars are visible
