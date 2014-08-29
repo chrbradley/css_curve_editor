@@ -1,121 +1,135 @@
-var $endpoints, toggled;
-
+// let the endpoints and toggle status be accessed outside of their own scope
+var $endpoints, toggled, draggable;
+// PAGE LOAD
 $(function() {
-    toggled = true;
-    var ctx = $("#bezierCurve").get(0).getContext("2d");
-    $endpoints = $(".knob.endpoint");
-    render(ctx);
-    var winwidth = window.innerWidth;
-    var conwidth = $('.container').innerWidth();
-    var contain = (winwidth - conwidth) / 2 + 10;
+  // Show handles at the beginning
+  toggled = true;
+  // set the context to canvas
+  var ctx = $("#bezierCurve").get(0).getContext("2d");
+  // find initial endpoints
+  $endpoints = $(".knob.endpoint");
+  // find the point at which the canvas starts
+  var winwidth = window.innerWidth;
+  var conwidth = $('.container').innerWidth();
+  var contain = (winwidth - conwidth) / 2 + 10;
+  
+  // allow all knobs to be dragged
+  draggable = function() {
     $(".knob").draggable({
+        // do not let knobs be dragged outside of the canvas
         containment: [contain, 190, contain + 800, 590],
+        // on drag, render the canvas
         drag: function(event, ui) {
             render(ctx);
         },
+        // on stop, render the canvas
         stop: function(){
             render(ctx);
         }
     });
-//----------------------add-----------------------------*
-    $('.coordinate-plane').on('click', function(event){
-      //added alt key event
-      if (event.altKey) {
+  };
+  // render the canvas with the endpoints 
+  render(ctx);
+  draggable();
 
-        var element = $('<div class="knob endpoint"><span class="knob handle left"></span><span class="knob handle right"></span></div>');
-        //counted for offset
-        if(!toggled) {
-          element.addClass('hide-handle');
-        }
-        var offSet = $(this).offset();
-        var relX = event.pageX - offSet.left;
-        var relY = event.pageY - offSet.top;
-        //finding the one to the right
-        var theOne;
-        //goes through and find the one to the right
-        $endpoints.each(function(index){
-          if( $($endpoints[index]).position().left > relX ){
-            theOne = $($endpoints[index]);
-            element.insertBefore(theOne).css({"left": relX, "top": relY});
-            return false;
-          } else {
-            theOne = $($endpoints[index]);
-            element.insertAfter(theOne).css({"left": relX, "top": relY});
-          }
-        });
+// --------------------- CLICK EVENTS --------------------------//
 
-        if( $endpoints.length === 0){
-          element.appendTo($('.coordinate-plane')).css({"left": relX, "top": relY});
-        }
-        //these needs to be copy here
-        $endpoints = $(".knob.endpoint");
-        render(ctx);
-
-        //this needs to be copy here
-        
-        $(".knob").draggable({
-            containment: '.coordinate-plane',
-            drag: function(event, ui) {
-                render(ctx);
-                // setDemoValue();
-            },
-            stop: function(){
-                render(ctx);
-                // setTransitionFn();
-                // setDemoValue();
-            }
-        });
+  // ------ CANVAS CLICK -------//
+  $('.coordinate-plane').on('click', function(event){
+    // if the alt key was pressed on click, create node at correct spot
+    if (event.altKey) {
+      // create dom element
+      var element = $('<div class="knob endpoint"><span class="knob handle left"></span><span class="knob handle right"></span></div>');
+      // if the handles are set to hidden
+      if(!toggled) {
+        // add appropriate class to element
+        element.addClass('hide-handle');
       }
-
-    });
-//------------------delete--------------------------------*
-    $('body').on('click', '.knob.endpoint', function() {
-      if (event.shiftKey) {
-        $(this).remove();
-        //this needs to be copy here
-        $endpoints = $(".knob.endpoint");
-        render(ctx);
+      // find the position of the click, relative to the canvas
+      var offSet = $(this).offset();
+      var relX = event.pageX - offSet.left;
+      var relY = event.pageY - offSet.top;
+      //finding the one to the right
+      var theOne;
+      //goes through and find the one to the right
+        // if found, inserts before, if not adds to the end of endpoints
+      $endpoints.each(function(index){
+        if( $($endpoints[index]).position().left > relX ){
+          theOne = $($endpoints[index]);
+          element.insertBefore(theOne).css({"left": relX, "top": relY});
+          return false;
+        } else {
+          theOne = $($endpoints[index]);
+          element.insertAfter(theOne).css({"left": relX, "top": relY});
+        }
+      });
+      // if no endpoints in the array
+      if( $endpoints.length === 0){
+        // add endpoint
+        element.appendTo($('.coordinate-plane')).css({"left": relX, "top": relY});
       }
-    });
-//----------------button click-----------------------------------*
+      // find updated list of endpoints, render
+      $endpoints = $(".knob.endpoint");
+      render(ctx);
+      // allow to be dragged
+      draggable();
+    }
+
+  });
+
+  // -------- ENDPOINT CLICK --------- //
+  $('body').on('click', '.knob.endpoint', function() {
+    // if shift key is pressed, delete node
+    if (event.shiftKey) {
+      // delete node
+      $(this).remove();
+      // find endpoints and rerender
+      $endpoints = $(".knob.endpoint");
+      render(ctx);
+    }
+  });
+
+  // -------- BUTTON CLICK --------- //
   $('#button').on('click', function(){
+    // toggle handles on and off
     toggled = !toggled;
     $endpoints.toggleClass('hide-handle');
+    // rerender with no handles
     render(ctx);
   });
 });
 
-function adjustValue(val) {
-    val = val.toFixed(2);
-    val = val.toString().replace("0.", ".").replace("1.00", "1").replace(".00", "0");
-    return val;
-}
-
+// --------------------------- FUNCTIONS --------------------------- //
 function render(ctx) {
-    ctx.clearRect(0,0,800,400);
-    
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#4682B4";
+  // clear canvas
+  ctx.clearRect(0,0,800,400);
+  // start line
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#4682B4";
+  // for each endpoint in list
+  $endpoints.each(function(index, point){
+    // if there is an endpoint after it
+    if ($endpoints[index + 1]){
+      // jQuery select current and next points
+      $point = $(point);
+      $next = $($endpoints[index + 1]);
+      // move to the current point's position on the canvas
+      ctx.moveTo($point.position().left + 5,$point.position().top -4);
+      // make a curve using the point's right handle's position
+      ctx.bezierCurveTo($point.children('.right').position().left + $point.position().left,
+                        $point.children('.right').position().top + $point.position().top - 9,
+                        // the next point's left handle's position
+                        $next.children('.left').position().left + $next.position().left,
+                        $next.children('.left').position().top + $next.position().top - 9,
+                        // and the next point's position on the canvas
+                        $next.position().left + 5,
+                        $next.position().top - 4);
 
-    $endpoints.each(function(index, point){
-      if ($endpoints[index + 1]){
-
-        $point = $(point);
-        $next = $($endpoints[index + 1]);
-
-        ctx.moveTo($point.position().left + 5,$point.position().top -4);
-
-        ctx.bezierCurveTo($point.children('.right').position().left + $point.position().left,
-                          $point.children('.right').position().top + $point.position().top - 9,
-                          $next.children('.left').position().left + $next.position().left,
-                          $next.children('.left').position().top + $next.position().top - 9,
-                          $next.position().left + 5,
-                          $next.position().top - 4);
-        ctx.stroke();
-
-      }
-    });    // ---------------------- END OF ZACH'S COMMENTS, BEGINNING OF HUY'S COMMENTS -----------------------//
+      // draw the curve from point to next point
+      ctx.stroke();
+    }
+  });    // ---------------------- END OF ZACH'S COMMENTS, BEGINNING OF HUY'S COMMENTS -----------------------//
   //create a path from the current point back to the starting point
   ctx.closePath();
   //if handle bars are visible
