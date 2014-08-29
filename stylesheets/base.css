@@ -372,48 +372,6 @@ label span, legend span {
 /* Ported 
 ===================================================*/
 
-/*body {
-  font: 13px sans-serif;
-  position: relative;
-  width: 960px;
-  height: 500px;
-}
-*/
-
-form {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-}
-rect {
-  fill: none;
-  pointer-events: all;
-}
-circle, .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-circle {
-  fill: #fff;
-  fill-opacity: .2;
-  cursor: move;
-}
-.selected {
-  fill: #ff7f0e;
-  stroke: #ff7f0e;
-}
-.axis {
-  font: 10px sans-serif;
-}
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-.x.axis path {
-  display: none;
-}
 #ballWrapper {
   width: 140px;
   height: 400px;
@@ -458,19 +416,19 @@ circle {
   border: none;
   pointer-events: none;
 }
-.left, .right {
-  background: #1AC8F5;
+.handle {
   z-index: 50;
   position: relative;
 }
+.right {
+  background: #1AC8F5;
+  left: 56px;
+  top: 2px;
+}
 .left {
   background: #CCC;
-}
-#p1X, #p1Y {
-  color: #00AEDB;
-}
-#p2X, #p2Y {
-  color: #666;
+  left: -47px;
+  top: 4px;
 }
 .first {
   left: 50px;
@@ -483,13 +441,5 @@ circle {
 .mid {
   left: 200px;
   top: 200px;
-}
-.right {
-  left: 56px;
-  top: 2px;
-}
-.left {
-  left: -47px;
-  top: 4px;
 }
 /* Animations */
