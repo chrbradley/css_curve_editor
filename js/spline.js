@@ -220,8 +220,6 @@ function keyframes() {
       html.push(percentage + "%  {");
       html.push("bottom: " + positionY + "%;");
       html.push("-webkit-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
-      html.push("-moz-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
-      html.push("animation-timing-function: cubic-bezier" + cubic.join(",") + ");");
       html.push("}");
     //if it is the last node
     } else {
