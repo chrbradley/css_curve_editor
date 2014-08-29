@@ -178,15 +178,15 @@ function keyframes() {
 
   //bezierCurve formula
   $endpoints.each(function(index, point){
-    //if not the first node
-    if ($endpoints[index - 1]){
+    //if the node has a next node
+    if ($endpoints[index + 1]){
 
-      //defining current and prev node
+      //defining current and next node
       var $point = $(point);
-      var $prev = $($endpoints[index - 1]);
-      //distance from current node and prev node
-      var diffonX = $point.position().left - $prev.position().left;
-      var diffonY = $point.position().top - $prev.position().top;
+      var $next = $($endpoints[index + 1]);
+      //distance from current node and next node
+      var diffonX = $next.position().left - $point.position().left;
+      var diffonY = $next.position().top - $point.position().top;
       //setting coef to account for varying Y differences
       var coef = 1;
       if(diffonY < 0){
@@ -197,36 +197,38 @@ function keyframes() {
       //defining Y position relative to bottom; bottom most is equal to 0, top being 100
       var positionY = Math.abs( ($point.position().top - 4) / 4 - 100);
       //defining X position in percentage relative to the range (from first node to last node)
-      var currentPositionX = $point.position().left - first;
-      var percentage = Math.round( (currentPositionX / total) * 100 );
+      var pointPositionX = $point.position().left - first;
+      var percentage = Math.round( (pointPositionX / total) * 100 );
 
       //storage for our cubic bezier curve parameters
       var cubic = [];
-      //parameters: prevRightX and prevRightY are the right knob from the prev node
-      var prevRightX = $prev.children('.right').position().left;
-          prevRightX = parseFloat( (prevRightX + 4) / diffonX ).toFixed(2);
+      //parameters: pointRightX and pointRightY are the right knob of the point node
+      var pointRightX = $point.children('.right').position().left;
+          pointRightX = parseFloat( (pointRightX + 4) / diffonX ).toFixed(2);
 
-      var prevRightY = $prev.children('.right').position().top * coef;
-          prevRightY = parseFloat( (prevRightY + 9) / diffonY ).toFixed(2);
-      //parameters: currentLeftX and currentLeftY are the right knob from the prev node
-      var currentLeftX = diffonX + $point.children('.left').position().left;
-          currentLeftX = parseFloat( (currentLeftX + 1) / diffonX ).toFixed(2);
+      var pointRightY = $point.children('.right').position().top * coef;
+          pointRightY = parseFloat( (pointRightY + 9) / diffonY ).toFixed(2);
+      //parameters: nextLeftX and nextLeftY are the left knob of the next node
+      var nextLeftX = diffonX + $next.children('.left').position().left;
+          nextLeftX = parseFloat( (nextLeftX + 1) / diffonX ).toFixed(2);
 
-      var currentLeftY = diffonY + $point.children('.left').position().top * coef;
-          currentLeftY = parseFloat( (currentLeftY + 9) / diffonY ).toFixed(2);
+      var nextLeftY = diffonY + $next.children('.left').position().top * coef;
+          nextLeftY = parseFloat( (nextLeftY + 9) / diffonY ).toFixed(2);
       //pushing our parameters into our storage to be used later
-      cubic.push(prevRightX, prevRightY, currentLeftX, currentLeftY);
+      cubic.push(pointRightX, pointRightY, nextLeftX, nextLeftY);
       //add to html element to display CSS key frames
       html.push(percentage + "%  {");
       html.push("bottom: " + positionY + "%;");
       html.push("-webkit-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
+      html.push("-moz-animation-timing-function: cubic-bezier(" + cubic.join(",") + ");");
+      html.push("animation-timing-function:: cubic-bezier" + cubic.join(",") + ");");
       html.push("}");
-    //if it is the first node
+    //if it is the last node
     } else {
       var $point = $(point);
-      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100); //400 - 
+      var positionY = Math.abs( ($point.position().top - 4) / 4 - 100);
       //add to html element with no animation
-      html.push("0%  {");
+      html.push("100%  {");
       html.push("bottom: " + positionY + "%;");
       html.push("}");
     }
